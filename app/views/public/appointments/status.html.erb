@@ -1,0 +1,15 @@
+<div class="max-w-xl mx-auto mt-10 p-6 bg-white shadow rounded">
+  <h2 class="text-xl font-bold text-gray-800 mb-4">Appointment Status</h2>
+
+  <p><strong>Appointment Number:</strong> <%= @appointment.appointment_number %></p>
+  <p><strong>Name:</strong> <%= @appointment.full_name %></p>
+  <p><strong>Date:</strong> <%= @appointment.appointment_date.strftime("%B %d, %Y %l:%M %p") %></p>
+  <p><strong>Status:</strong> <%= @appointment.status.titleize %></p>
+
+  <% if @appointment.status == "pending" || @appointment.status == "approved" %>
+    <div class="mt-4">
+      <%= link_to "Reschedule", "#", class: "text-blue-600 underline mr-4" %>
+      <%= link_to "Cancel", "#", class: "text-red-600 underline" %>
+    </div>
+  <% end %>
+</div>
