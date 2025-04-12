@@ -9,7 +9,11 @@ Rails.application.routes.draw do
     post '/:slug/book', to: 'appointments#create'
     get '/status/:appointment_number', to: 'appointments#status', as: :appointment_status
   end
-  devise_for :users
+  devise_for :users, controllers: {
+    registrations: 'users/registrations'
+    # You can add other custom controllers here later if needed, e.g.:
+    # sessions: 'users/sessions'
+  }
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
