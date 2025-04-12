@@ -1,0 +1,15 @@
+Appointment#status_update
+
+Appointment Status Update
+=========================
+
+Hello <%= @customer_name %>,
+
+There's an update on your appointment (Ref: <%= @appointment.appointment_number %>) with <%= @company.name %> scheduled for <%= @appointment.appointment_date.strftime("%a, %b %d, %Y at %I:%M %p") %>.
+
+The new status is: <%= @status.capitalize %>
+
+You can view the details here:
+<%= @status_url %>
+
+Thank you!

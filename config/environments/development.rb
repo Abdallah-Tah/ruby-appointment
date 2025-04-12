@@ -32,13 +32,26 @@ Rails.application.configure do
   config.active_storage.service = :local
 
   # Don't care if the mailer can't send.
-  config.action_mailer.raise_delivery_errors = false
+  config.action_mailer.raise_delivery_errors = true
 
   # Make template changes take effect immediately.
   config.action_mailer.perform_caching = false
 
   # Set localhost to be used by links generated in mailer templates.
   config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
+
+  # Configure SMTP settings
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+    address:              'mail.privateemail.com',
+    port:                 465,
+    domain:               'djib-payroll.com', # Often needed, derived from FROM address
+    user_name:            'support@djib-payroll.com',
+    password:             'Skull77856701@', # *** Use ENV vars or credentials in production! ***
+    authentication:       'plain', # Usually plain, login, or cram_md5
+    enable_starttls_auto: false, # Set to false for SSL (port 465)
+    ssl:                  true    # Explicitly enable SSL for port 465
+  }
 
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log

@@ -1,20 +1,139 @@
-<div class="max-w-7xl mx-auto py-10 px-4">
-  <h1 class="text-3xl font-bold text-gray-800 mb-6">Welcome to Your Dashboard</h1>
+<% content_for :title, "Dashboard" %>
 
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-    <div class="bg-white p-6 rounded-lg shadow">
-      <h2 class="text-xl font-semibold text-red-700">Upcoming Appointments</h2>
-      <p class="mt-2 text-gray-600">View and manage appointments scheduled by your customers.</p>
+<div class="w-full"> <%# Ensure content takes full width %>
+  <h1 class="text-2xl font-semibold text-gray-800 mb-6">Welcome to Your Dashboard</h1>
+
+  <%# Stats Cards Grid %>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <%# Upcoming This Month Card %>
+    <div class="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow">
+      <h2 class="text-sm font-medium text-gray-500 mb-1">Upcoming (This Month)</h2>
+      <p class="text-3xl font-bold text-gray-900"><%= @upcoming_this_month_count %></p>
+      <%# <p class="text-xs text-green-600 mt-1">+5% from last month</p> # Optional trend indicator %>
     </div>
 
-    <div class="bg-white p-6 rounded-lg shadow">
-      <h2 class="text-xl font-semibold text-green-700">Pending Approvals</h2>
-      <p class="mt-2 text-gray-600">Approve or reject appointments from your booking page.</p>
+    <%# This Week Card %>
+    <div class="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow">
+      <h2 class="text-sm font-medium text-gray-500 mb-1">Appointments (This Week)</h2>
+      <p class="text-3xl font-bold text-gray-900"><%= @this_week_count %></p>
     </div>
 
-    <div class="bg-white p-6 rounded-lg shadow">
-      <h2 class="text-xl font-semibold text-blue-700">Settings</h2>
-      <p class="mt-2 text-gray-600">Manage your company profile, users, and availability.</p>
+    <%# Cancelled Card %>
+    <div class="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow">
+      <h2 class="text-sm font-medium text-gray-500 mb-1">Cancelled (Total)</h2>
+      <p class="text-3xl font-bold text-gray-900"><%= @cancelled_count %></p>
     </div>
   </div>
+
+  <%# Appointments Table %>
+  <div class="bg-white p-6 rounded-lg shadow">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-xl font-semibold text-gray-800">Upcoming Appointments</h2>
+      <%= link_to "Add New Appointment", new_appointment_path, class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date & Time</th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+            <th scope="col" class="relative px-6 py-3">
+              <span class="sr-only">Actions</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          <% if @appointments.any? %>
+            <% @appointments.each do |appointment| %>
+              <tr>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="text-sm font-medium text-gray-900"><%= appointment.full_name %></div>
+                   <% if appointment.reason.present? %>
+                    <div class="text-xs text-gray-500 truncate" title="<%= appointment.reason %>">Reason: <%= appointment.reason %></div>
+                   <% end %>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="text-sm text-gray-900"><%= appointment.email %></div>
+                  <div class="text-sm text-gray-500"><%= appointment.phone %></div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="text-sm text-gray-900"><%= appointment.appointment_date.strftime("%a, %b %d, %Y") %></div>
+                  <div class="text-sm text-gray-500"><%= appointment.appointment_date.strftime("%I:%M %p %Z") %></div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <%# Add styling based on status %>
+                  <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                               <%= 'bg-yellow-100 text-yellow-800' if appointment.status == 'pending' %>
+                               <%= 'bg-green-100 text-green-800' if appointment.status == 'approved' %>
+                               <%= 'bg-blue-100 text-blue-800' if appointment.status == 'rescheduled' %> <%# Example %>
+                               capitalize">
+                    <%= appointment.status %>
+                  </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                  <%# Add actual links/modal triggers later %>
+                  <% if appointment.status == 'pending' %>
+                     <button onclick="openModal('<%= appointment.full_name %>', '<%= appointment_path(appointment, status: 'approved') %>', '<%= appointment_path(appointment, status: 'rejected') %>')" class="text-indigo-600 hover:text-indigo-900 mr-3">Approve/Reject</button>
+                  <% end %>
+                   <%# Placeholder buttons - these will need corresponding routes/actions/modals %>
+                  <a href="#" class="text-blue-600 hover:text-blue-900 mr-3">Reschedule</a>
+                  <a href="#" class="text-red-600 hover:text-red-900">Cancel</a>
+                </td>
+              </tr>
+            <% end %>
+          <% else %>
+            <tr>
+              <td colspan="5" class="px-6 py-4 text-center text-sm text-gray-500">No upcoming appointments found.</td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+     <%# Optional: Add pagination links here if using pagination %>
+     <%#= paginate @appointments %>
+  </div>
+
+  <%# Include the Approve/Reject Modal structure if not already in layout %>
+  <%# Ensure you have a modal structure like the one expected by openModal JS %>
+  <%# Example basic modal structure (adapt as needed): %>
+  <div id="action-modal" class="fixed z-10 inset-0 overflow-y-auto hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+      <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+      <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+      <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+        <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+          <div class="sm:flex sm:items-start">
+            <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+              <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
+                Confirm Action
+              </h3>
+              <div class="mt-2">
+                <p class="text-sm text-gray-500" id="modal-customer"></p> <%# Customer name will be set by JS %>
+                <p class="text-sm text-gray-500">Are you sure you want to proceed?</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+          <%# Buttons use formaction set by JS %>
+          <%= form_with url: "#", method: :patch, class: "inline-block" do %>
+            <button type="submit" class="approve-btn w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm">
+              Approve
+            </button>
+          <% end %>
+           <%= form_with url: "#", method: :patch, class: "inline-block" do %>
+            <button type="submit" class="reject-btn mt-3 w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+              Reject
+            </button>
+          <% end %>
+          <button type="button" onclick="closeModal()" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>

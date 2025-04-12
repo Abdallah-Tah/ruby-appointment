@@ -1,0 +1,15 @@
+Appointment#confirmation
+
+Appointment Request Received
+============================
+
+Hello <%= @customer_name %>,
+
+Your appointment request with <%= @company.name %> for <%= @appointment.appointment_date.strftime("%a, %b %d, %Y at %I:%M %p") %> has been received.
+
+Your appointment number is: <%= @appointment.appointment_number %>
+
+You can check the status of your appointment here:
+<%= @status_url %>
+
+Thank you!

@@ -26,6 +26,6 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
    root "dashboard#index"
-   resources :appointments, only: [:index, :show, :update]
+   resources :appointments, only: [:index, :show, :update, :new, :create]
    resources :companies, only: [:index, :show, :update]
 end

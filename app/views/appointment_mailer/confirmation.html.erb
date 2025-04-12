@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  </head>
+  <body>
+    <h1>Appointment Request Received</h1>
+    <p>
+      Hello <%= @customer_name %>,
+      <br>
+      Your appointment request with <%= @company.name %> for <%= @appointment.appointment_date.strftime("%a, %b %d, %Y at %I:%M %p") %> has been received.
+    </p>
+    <p>Your appointment number is: <strong><%= @appointment.appointment_number %></strong></p>
+    <p>You can check the status of your appointment here:</p>
+    <p><a href="<%= @status_url %>"><%= @status_url %></a></p>
+    <p>Thank you!</p>
+  </body>
+</html>

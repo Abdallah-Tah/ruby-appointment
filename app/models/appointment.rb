@@ -30,3 +30,29 @@ class Public::AppointmentsController < ApplicationController
     params.require(:appointment).permit(:full_name, :email, :phone, :appointment_date, :reason)
   end
 end
+
+class Appointment < ApplicationRecord
+  belongs_to :company
+  belongs_to :user, optional: true # Assuming admin users can also be linked
+
+  # Attributes for customer booking
+  validates :full_name, presence: true
+  validates :email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }
+  validates :phone, presence: true # Consider adding format validation later
+  validates :appointment_date, presence: true
+  # `reason` is optional
+  validates :status, presence: true # Should likely have default 'pending'
+  validates :appointment_number, presence: true, uniqueness: true # Needs generation logic
+
+  before_validation :generate_appointment_number, on: :create
+
+  private
+
+  def generate_appointment_number
+    # Simple random number generation, ensure uniqueness loop if needed
+    self.appointment_number ||= loop do
+      random_number = SecureRandom.alphanumeric(8).upcase
+      break random_number unless Appointment.exists?(appointment_number: random_number)
+    end
+  end
+end

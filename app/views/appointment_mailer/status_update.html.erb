@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  </head>
+  <body>
+    <h1>Appointment Status Update</h1>
+    <p>
+      Hello <%= @customer_name %>,
+      <br>
+      There's an update on your appointment (Ref: <%= @appointment.appointment_number %>) with <%= @company.name %> scheduled for <%= @appointment.appointment_date.strftime("%a, %b %d, %Y at %I:%M %p") %>.
+    </p>
+    <p>The new status is: <strong><%= @status.capitalize %></strong></p>
+    <p>You can view the details here:</p>
+    <p><a href="<%= @status_url %>"><%= @status_url %></a></p>
+    <p>Thank you!</p>
+  </body>
+</html>
